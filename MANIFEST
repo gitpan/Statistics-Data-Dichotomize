@@ -14,5 +14,4 @@ t/15-shrink.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
-
 META.yml

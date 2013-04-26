@@ -13,13 +13,15 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Test::More' => 0,
+        'Number::Misc' => '1.0',
         'Statistics::Lite' => '3.2',
         'Scalar::Util' => '1.18',
+        'Statistics::Data' => '0.02',
     },
     requires => {
         'perl' => 5.006,
     },
-    add_to_cleanup      => [ 'Statistics-Data-Dichotomize-0.01-*' ],
+    add_to_cleanup      => [ 'Statistics-Data-Dichotomize-0.02-*' ],
     create_makefile_pl => 'traditional',
 );
 

@@ -7,7 +7,7 @@ use Statistics::Data;
 use vars qw($VERSION @ISA @EXPORT);
 use Exporter;
 @ISA = qw(Statistics::Data Exporter);
-$VERSION = '0.01';
+$VERSION = '0.02';
 use Carp qw(croak carp);
 use Statistics::Lite qw(mean median mode);
 use Number::Misc 'is_numeric'; # is_numeric('x'); 
@@ -372,8 +372,8 @@ Sort option for pool method ?
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-Statistics-Data-Dichotomize-0.01 at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Statistics-Data-Dichotomize-0.01>.  I will be notified, and then you'll
+Please report any bugs or feature requests to C<bug-Statistics-Data-Dichotomize-0.02 at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Statistics-Data-Dichotomize-0.02>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
@@ -388,19 +388,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Statistics-Data-Dichotomize-0.01>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Statistics-Data-Dichotomize-0.02>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Statistics-Data-Dichotomize-0.01>
+L<http://annocpan.org/dist/Statistics-Data-Dichotomize-0.02>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Statistics-Data-Dichotomize-0.01>
+L<http://cpanratings.perl.org/d/Statistics-Data-Dichotomize-0.02>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Statistics-Data-Dichotomize-0.01/>
+L<http://search.cpan.org/dist/Statistics-Data-Dichotomize-0.02/>
 
 =back
 

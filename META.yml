@@ -3,7 +3,9 @@ abstract: 'Dichotomize one or more numerical or categorical sequences into a sin
 author:
   - 'Roderick Garton <rgarton@cpan.org>'
 build_requires:
+  Number::Misc: 1.0
   Scalar::Util: 1.18
+  Statistics::Data: 0.02
   Statistics::Lite: 3.2
   Test::More: 0
 configure_requires:
@@ -17,9 +19,9 @@ name: Statistics-Data-Dichotomize
 provides:
   Statistics::Data::Dichotomize:
     file: lib/Statistics/Data/Dichotomize.pm
-    version: 0.01
+    version: 0.02
 requires:
   perl: 5.006
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01
+version: 0.02

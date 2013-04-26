@@ -6,7 +6,9 @@ WriteMakefile
   'NAME' => 'Statistics::Data::Dichotomize',
   'VERSION_FROM' => 'lib/Statistics/Data/Dichotomize.pm',
   'PREREQ_PM' => {
+                   'Number::Misc' => '1.0',
                    'Scalar::Util' => '1.18',
+                   'Statistics::Data' => '0.02',
                    'Statistics::Lite' => '3.2',
                    'Test::More' => 0
                  },
