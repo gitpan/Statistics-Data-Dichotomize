@@ -1,10 +1,11 @@
-Revision history for Statistics-Data-Dichotomize-0.02
+Revision history for perl module Statistics-Data-Dichotomize
 
-0.02    Apr 25 2013
+0.03 2013-07-29
+    - add method crosslag() to support match() (instead of calling from Statistics::Data)
 
-        CPAN Install 1.
+0.02 2013-04-25
+    - CPAN Install 1
 
-0.01	Mon Oct 22 12:00:29 2012
-
-        First version.
+0.01 2012-10-22
+    - First version
 

@@ -7,7 +7,7 @@ use Statistics::Data;
 use vars qw($VERSION @ISA @EXPORT);
 use Exporter;
 @ISA = qw(Statistics::Data Exporter);
-$VERSION = '0.02';
+$VERSION = '0.03';
 use Carp qw(croak carp);
 use Statistics::Lite qw(mean median mode);
 use Number::Misc 'is_numeric'; # is_numeric('x'); 
@@ -20,7 +20,7 @@ Statistics-Data-Dichotomize - Dichotomize one or more numerical or categorical s
 
 =head1 SYNOPSIS
 
- use Statistics::Data::Dichotomize;
+ use Statistics::Data::Dichotomize 0.03;
  my $ddat = Statistics::Data::Dichotomize->new();
  $ddat->load(23, 24, 7, 55); # numerical data
  my $aref = $ddat->split(value => 'median',); # or use swing(), pool(), binate(), shrink()
@@ -74,11 +74,11 @@ Arguments:
 
 =item value => 'mean|median|mode' - or a specific numerical value, or code reference
 
-Specify the value at which the data will be split. This could be the mean, median or mode (as calculated by L<Statistics::Lite|Statistics::Lite>), or a numerical value within the range of the data, or some appropriate subroutine - one that takes a list and returns a single descriptive about it. The default is the I<median>. The split-value, as specified by C<value>, can be retrieved as the second element returned if calling for an array.
+Specify the value at which the data will be split. This could be the mean, median or mode (as calculated by L<Statistics::Lite|Statistics::Lite>), or a numerical value within the range of the data, or some appropriate subroutine - one that takes a list and returns a single descriptive about it. The default is the I<median>. The split-value, as specified by B<value>, can be retrieved as the second element returned if calling for an array.
 
 =item equal => 'I<gt>|I<lt>|I<0>'
 
-Specify how to split the data should the split-value (as specified by C<value>) be present in the data. The default value is 0: observations equal to the split-value are skipped; the L<Joins|Statistics::Sequences::Joins> test in particular assumes this. If C<equal =E<gt> 'I<gt>'>: all data-values I<greater than or equal to> the split-value will form one group, and all data-values less than the split-value will form another. To split with all values I<less than or equal to> in one group, and higher values in another, use C<equal =E<gt> 'I<lt>'>.
+Specify how to split the data should the split-value (as specified by B<value>) be present in the data. The default value is 0: observations equal to the split-value are skipped; the L<Joins|Statistics::Sequences::Joins> test in particular assumes this. If B<equal =E<gt> 'I<gt>'>: all data-values I<greater than or equal to> the split-value will form one group, and all data-values less than the split-value will form another. To split with all values I<less than or equal to> in one group, and higher values in another, use B<equal =E<gt> 'I<lt>'>.
 
 =item data => 'I<string>'
 
@@ -132,7 +132,7 @@ Note that the critical region of the distribution lies (only) in the upper-tail;
 
 =item equal => 'I<gt>|I<lt>|I<rpt>|I<0>'
 
-The default result when the difference between two successive values is zero is to skip the observation, and move onto the next succession (C<equal =E<gt> 0>). Alternatively, you may wish to repeat the result for the previous succession; skipping only a difference of zero should it occur as the first result (C<equal =E<gt> 'rpt'>). Or, a difference greater than or equal to zero is counted as an increase (C<equal =E<gt> 'gt'>), or a difference less than or equal to zero is counted as a decrease. For example, 
+The default result when the difference between two successive values is zero is to skip the observation, and move onto the next succession (B<equal =E<gt> 0>). Alternatively, you may wish to repeat the result for the previous succession; skipping only a difference of zero should it occur as the first result (B<equal =E<gt> 'rpt'>). Or, a difference greater than or equal to zero is counted as an increase (B<equal =E<gt> 'gt'>), or a difference less than or equal to zero is counted as a decrease. For example, 
 
  @values =    (qw/3 3 7 6 5 2 2/);
  @dicho_def = (qw/1 0 0 0/); # First and final results (of 3 - 3, and 2 - 2) are skipped
@@ -200,7 +200,7 @@ sub pool {
     my $self = shift;
     my $args = ref $_[0] ? $_[0] : {@_};
     my $dat = ref $args->{'data'} ? $args->{'data'} : $self->read($args);
-    _check_numerical($self, $_) foreach @{$dat};
+    $self->all_numeric($_) foreach @{$dat};
     my ($dat1, $dat2) = @{$dat};
     my $sum = scalar(@{$dat1}) + scalar(@{$dat2});
     my ($i, $x, $y, @seqs) = (0);
@@ -244,24 +244,24 @@ Specify two referenced arrays; no data, or more than 2, gets a C<croak>.
 
 =item lag => I<integer> (where I<integer> < number of observations I<or> I<integer> > -1 (number of observations) ) 
 
-Match the two data-sets by shifting the first named set ahead or behind the other data-set by C<lag> observations. The default is zero. For example, one data-set might be targets, and another responses to the targets:
+Match the two data-sets by shifting the first named set ahead or behind the other data-set by B<lag> observations. The default is zero. For example, one data-set might be targets, and another responses to the targets:
 
  targets   =	cbbbdacdbd
  responses =	daadbadcce
 
-Matched as a single sequence of hits (1) and misses (0) where C<lag> = B<0> yields (for the match on "a" in the 6th index of both arrays):
+Matched as a single sequence of hits (1) and misses (0) where B<lag> = B<0> yields (for the match on "a" in the 6th index of both arrays):
 
  0000010000
 
-With C<lag> => 1, however, each response is associated with the target one ahead of the trial for which it was observed; i.e., each target is shifted to its +1 index. So the first element in the above responses (I<d>) would be associated with the second element of the targets (I<b>), and so on. Now, matching the two data-sets with a B<+1> lag gives two hits, of the 4th and 7th elements of the responses to the 5th and 8th elements of the targets, respectively:
+With B<lag> => 1, however, each response is associated with the target one ahead of the trial for which it was observed; i.e., each target is shifted to its +1 index. So the first element in the above responses (I<d>) would be associated with the second element of the targets (I<b>), and so on. Now, matching the two data-sets with a B<+1> lag gives two hits, of the 4th and 7th elements of the responses to the 5th and 8th elements of the targets, respectively:
 
  000100100
 
-making 5 runs. With C<lag> => 0, there are 3 runs. Lag values can be negative, so that C<lag> => -2 will give:
+making 5 runs. With B<lag> => 0, there are 3 runs. Lag values can be negative, so that B<lag> => -2 will give:
 
  00101010
 
-Here, responses necessarily start at the third element (I<a>), the first hits occurring when the fifth response-element corresponds to the the third target element (I<b>). The last response (I<e>) could not be used, and the number of elements in the hit/miss sequence became n-C<lag> less the original target sequence. This means that the maximum value of lag must be one less the size of the data-sets, or there will be no data.
+Here, responses necessarily start at the third element (I<a>), the first hits occurring when the fifth response-element corresponds to the the third target element (I<b>). The last response (I<e>) could not be used, and the number of elements in the hit/miss sequence became n-B<lag> less the original target sequence. This means that the maximum value of lag must be one less the size of the data-sets, or there will be no data.
 
 You can, alternatively, preserve all lagged data by looping any excess to the start or end of the criterion data. The number of observations will then always be the same, regardless of the lag. Matching the data in the example above with a lag of +1, with looping, creates an additional match between the final response and the first target (I<d>):
 
@@ -269,7 +269,7 @@ You can, alternatively, preserve all lagged data by looping any excess to the st
 
 =item loop => 0|1
 
-For circularized lagging), C<loop> => 1, and the size of the returned array is the same as those for the given data. For example, with a lag of +1, the last element in the "response" array is matched to the first element of the "target" array. 
+For circularized lagging), B<loop> => 1, and the size of the returned array is the same as those for the given data. For example, with a lag of +1, the last element in the "response" array is matched to the first element of the "target" array. 
 
 =back
 
@@ -316,17 +316,17 @@ sub binate {
 
  $seq->shrink(winlen => number, rule => CODE)
 
-This is a way to take non-overlapping slices, or windows, of a multinomial sequence of a given C<winlen>, and to make a true/false sequence out of them according to whether or not each slice passes a C<rule>. The C<rule> is a code reference that gets the data already L<load|load>ed as an array reference, and so might be something like this: 
+Take non-overlapping slices, or windows, of a multinomial sequence of a given B<winlen>, and to make a true/false sequence out of them according to whether or not each slice passes a B<rule>. The B<rule> is a code reference that gets the data already L<load|load, add, read, unload>ed as an array reference, and so might be something like this: 
 
  sub { return Statistics::Lite::mean(@$_) > 2 ? 1 : 0; }
 
-If C<length> is set to 3, this rule would make the following numerical sequence of 9 elements shrink into the following dichotomous (Boolean) sequence of 3 elements:
+If B<winlen> is set to 3, this rule would make the following numerical sequence of 9 elements shrink into the following dichotomous (Boolean) sequence of 3 elements:
 
  @data =  (1, 2, 3, 3, 3, 3, 4, 2, 1);
  @means = (2,       3,       2.5    );
  @dico =  (0,       1,       1      );
 
-It's up to the user to make sure the C<rule> method returns boolean values to dichotomize the data, and that the given length makes up equally sized segments (no error is thrown if this isn't the case, the remainder just gets figured in the same way).
+The B<rule> method must return boolean values to dichotomize the data, and B<winlen> should make up equally sized segments (no error is thrown if this isn't the case, the remainder just gets figured in the same way).
 
 =cut
 
@@ -348,11 +348,75 @@ sub shrink {
 }
 *boolwin = \&shrink;
 
-sub _check_numerical {# check data for comparison: two arefs to return:
-  my $self = shift;
-  croak __PACKAGE__, ' All data in must be numerical for the requested operation' unless $self->all_numeric($_[0]);
-  return 0;
+=head2 Helper methods
+
+=head3 crosslag
+
+ @lagged_arefs = $dat->crosslag(data => [\@ari1, @ari2], lag => signed integer, loop => 0|1);
+ $aref_of_arefs = $dat->crosslag(data => [\@ari1, @ari2], lag => signed integer, loop => 0|1); # same but not "wanting array" 
+
+Helper method: Takes two arrays and returns them cross-lagged against each other, shifting and popping values according to the number of "lags". Typically used when wanting to L<match|match> the two arrays against each other.
+
+=over 4
+
+=item lag => signed integer up to the number of elements
+
+Takes the first array sent as "data" as the reference or "target" array for the second "response" array to be shifted so many lags before or behind it. With no looping of the lags, this means the returned arrays are "lag"-elements smaller than the original arrays. For example, with lag => +1 (and loop => 0, the default):
+
+ @t = qw(c p w p s) becomes (p w p s)
+ @r = qw(p s s w r) becomes (p s s w)
+
+=item loop => 0|1
+
+For circularized lagging), B<loop> => 1, and the size of the returned array is the same as those for the given data. For example, with a lag of +1, the last element in the "response" array is matched to the first element of the "target" array:
+
+ @t = qw(c p w p s) becomes (p w p s c) (looped with +1)
+ @r = qw(p s s w r) becomes (p s s w r) (no effect)
+
+In this case, it might be more efficient to simply autolag the "target" sequence against itself.
+
+=back
+
+=cut
+
+sub crosslag {
+    my $self = shift;
+    my $args = ref $_[0] ? $_[0] : {@_};
+    my $lag = $args->{'lag'};
+    my $dat1 = $args->{'data'}->[0];
+    my $dat2 = $args->{'data'}->[1];
+    my $loop = $args->{'loop'};
+ 
+    return ( wantarray ? ($dat1, $dat2) : [$dat1, $dat2] ) if !$lag or abs($lag) >= scalar @{$dat1};
+    
+    my @tgt = @{$dat1};
+    my @rsp = @{$dat2};
+
+    if ($lag > 0) {
+        foreach (1 .. abs($lag) ) {
+            if ($loop) {
+                unshift(@tgt, pop @tgt);
+            }
+            else {
+                shift @tgt;
+                pop @rsp;
+            }
+        }
+    }
+    elsif ($lag < 0) {
+        foreach (1 .. abs($lag) ) {
+            if ($loop) {
+                push(@tgt, shift @tgt);
+            }
+            else {
+                pop @tgt;
+                shift @rsp;
+            }
+        }
+    }
+    return wantarray ? (\@tgt, \@rsp) : [\@tgt, \@rsp];
 }
+
 
 =head1 AUTHOR
 
@@ -372,8 +436,8 @@ Sort option for pool method ?
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-Statistics-Data-Dichotomize-0.02 at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Statistics-Data-Dichotomize-0.02>.  I will be notified, and then you'll
+Please report any bugs or feature requests to C<bug-Statistics-Data-Dichotomize-0.03 at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Statistics-Data-Dichotomize-0.03>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
@@ -388,19 +452,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Statistics-Data-Dichotomize-0.02>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Statistics-Data-Dichotomize-0.03>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Statistics-Data-Dichotomize-0.02>
+L<http://annocpan.org/dist/Statistics-Data-Dichotomize-0.03>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Statistics-Data-Dichotomize-0.02>
+L<http://cpanratings.perl.org/d/Statistics-Data-Dichotomize-0.03>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Statistics-Data-Dichotomize-0.02/>
+L<http://search.cpan.org/dist/Statistics-Data-Dichotomize-0.03/>
 
 =back
 

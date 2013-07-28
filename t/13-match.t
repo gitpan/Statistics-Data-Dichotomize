@@ -1,11 +1,11 @@
 #!perl -T
 
-use Test::More tests => 7;
+use Test::More tests => 11;
 use constant EPS => 1e-3;
 use Array::Compare;
 
 BEGIN {
-    use_ok( 'Statistics::Data::Dichotomize' ) || print "Bail out!\n";
+    use_ok( 'Statistics::Data::Dichotomize 0.03' ) || print "Bail out!\n";
 }
 
 my $seq = Statistics::Data::Dichotomize->new();
@@ -54,6 +54,18 @@ ok($cmp_aref->simple_compare(\@res_data, $data_aref), "Error in match results");
 $data_aref = $seq->match(data => [\@a, \@b], lag => 1, loop => 1);
 diag( "match() method, lag => 1 (with loop):\n\texpected\t=>\t", join('', @res_data),"\n\tobserved\t=>\t", join('', @$data_aref));
 ok($cmp_aref->simple_compare(\@res_data, $data_aref), "Error in match results");
+
+# lag method:
+@a = (qw/c b b b d a c d b d/);
+@b = (qw/d a a d b a d c c e/);
+my $aref = $seq->crosslag(data => [\@a, \@b], lag => 1, loop => 1);
+ok($cmp_aref->simple_compare([qw/d c b b b d a c d b/], $aref->[0]), "Error in lag");
+ok($cmp_aref->simple_compare(\@b, $aref->[1]), "Error in lag");
+$aref = $seq->crosslag(data => [\@a, \@b], lag => 1, loop => 0);
+ok($cmp_aref->simple_compare([qw/b b b d a c d b d/], $aref->[0]), "Error in lag");
+ok($cmp_aref->simple_compare([qw/d a a d b a d c c/], $aref->[1]), "Error in lag");
+#ok(equal($val1, 0), "windowize  $val1 = 0");
+
 
 sub equal {
     return 1 if $_[0] + EPS > $_[1] and $_[0] - EPS < $_[1];

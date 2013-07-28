@@ -21,7 +21,7 @@ my $builder = Module::Build->new(
     requires => {
         'perl' => 5.006,
     },
-    add_to_cleanup      => [ 'Statistics-Data-Dichotomize-0.02-*' ],
+    add_to_cleanup      => [ 'Statistics-Data-Dichotomize-0.03-*' ],
     create_makefile_pl => 'traditional',
 );
 
